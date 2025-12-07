@@ -1,0 +1,87 @@
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+
+export default function Footer() {
+  const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-gray-900 dark:bg-black text-gray-100 mt-20">
+      <div className="container-luxury py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          {/* Brand */}
+          <div>
+            <h3 className="text-2xl font-luxury text-luxury-gold mb-4">LUXE</h3>
+            <p className="text-gray-400 text-sm">
+              Discover timeless elegance through our curated collection of luxury fashion.
+            </p>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="font-luxury text-lg mb-4 text-gray-100">{t('footer.company')}</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link to="/about" className="hover:text-luxury-gold transition">{t('footer.about')}</Link></li>
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.careers')}</Link></li>
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.press')}</Link></li>
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="font-luxury text-lg mb-4 text-gray-100">{t('footer.customer')}</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.shipping')}</Link></li>
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.returns')}</Link></li>
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.faq')}</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-luxury text-lg mb-4 text-gray-100">{t('footer.contact')}</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li className="flex items-center space-x-2">
+                <Mail size={16} className="text-luxury-gold" />
+                <a href="mailto:info@luxe.com" className="hover:text-luxury-gold transition">info@luxe.com</a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Phone size={16} className="text-luxury-gold" />
+                <a href="tel:+1234567890" className="hover:text-luxury-gold transition">+1 (234) 567-890</a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <MapPin size={16} className="text-luxury-gold" />
+                <span>123 Fashion Ave, NY</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        <div className="border-t border-gray-800 pt-8 mb-8">
+          <div className="flex justify-center space-x-6">
+            <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
+              <Facebook size={20} />
+            </a>
+            <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
+              <Instagram size={20} />
+            </a>
+            <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
+              <Twitter size={20} />
+            </a>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+          <p>&copy; {currentYear} LUXE. {t('footer.allRightsReserved')}</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link to="#" className="hover:text-luxury-gold transition">{t('footer.privacy')}</Link>
+            <Link to="#" className="hover:text-luxury-gold transition">{t('footer.terms')}</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

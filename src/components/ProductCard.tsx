@@ -1,0 +1,108 @@
+import { Product } from '../lib/types';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ShoppingBag, Heart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { useState } from 'react';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export default function ProductCard({ product }: ProductCardProps) {
+  const { t } = useTranslation();
+  const { addItem } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [showAdded, setShowAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addItem(product, quantity);
+    setShowAdded(true);
+    setTimeout(() => setShowAdded(false), 2000);
+  };
+
+  return (
+    <div className="card-luxury rounded-lg overflow-hidden group">
+      {/* Image Container */}
+      <Link to={`/product/${product.id}`} className="relative h-80 bg-gray-200 dark:bg-gray-800 overflow-hidden block">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition duration-300 cursor-pointer"
+        />
+        {!product.inStock && (
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <p className="text-white text-xl font-semibold">{t('product.outOfStock')}</p>
+          </div>
+        )}
+        <button 
+          onClick={(e) => e.preventDefault()}
+          className="absolute top-4 right-4 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-luxury-gold transition"
+        >
+          <Heart size={20} className="text-gray-700 dark:text-gray-300" />
+        </button>
+      </Link>
+
+      {/* Content */}
+      <div className="p-6">
+        {/* Category & Rating */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold text-luxury-gold uppercase tracking-wider">
+            {product.category}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            ⭐ {product.rating} ({product.reviews})
+          </span>
+        </div>
+
+        {/* Name */}
+        <h3 className="font-luxury text-lg mb-2 text-gray-900 dark:text-gray-100 line-clamp-2">
+          {product.name}
+        </h3>
+
+        {/* Material */}
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          {product.material}
+        </p>
+
+        {/* Price */}
+        <div className="flex items-baseline gap-2 mb-4">
+          <span className="text-2xl font-luxury text-luxury-gold">
+            ${product.price.toFixed(2)}
+          </span>
+        </div>
+
+        {/* Add to Cart */}
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            className="w-16 px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded text-sm"
+            disabled={!product.inStock}
+          />
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.inStock}
+            className={`flex-1 py-2 px-3 rounded flex items-center justify-center gap-2 transition ${product.inStock
+                ? 'bg-luxury-gold text-luxury-dark hover:bg-opacity-90 font-semibold'
+                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              }`}
+          >
+            <ShoppingBag size={16} />
+            {showAdded ? '✓' : t('product.addToCart')}
+          </button>
+        </div>
+
+        {/* View Details Link */}
+        <Link
+          to={`/product/${product.id}`}
+          className="mt-3 block text-center text-sm text-luxury-gold hover:text-opacity-80 transition"
+        >
+          {t('shop.viewDetails')} →
+        </Link>
+      </div>
+    </div>
+  );
+}

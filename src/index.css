@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white dark:bg-luxury-dark text-gray-900 dark:text-gray-100 transition-colors duration-300;
+    font-family: "Lato", sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-luxury font-semibold;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl tracking-tight;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-luxury-gold text-luxury-dark font-semibold hover:bg-opacity-90 transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:bg-opacity-90 transition-all duration-300;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-dark transition-all duration-300;
+  }
+
+  .container-luxury {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-title {
+    @apply font-luxury text-3xl md:text-4xl text-center mb-12 text-gray-900 dark:text-gray-100;
+  }
+
+  .card-luxury {
+    @apply bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:shadow-xl transition-shadow duration-300;
+  }
+}
+
+/* Smooth transitions for dark mode */
+* {
+  @apply transition-colors duration-300;
+}
+
+/* Zoom animation for hero background */
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+.animate-zoom {
+  animation: zoom 20s ease-in-out infinite alternate;
+}
