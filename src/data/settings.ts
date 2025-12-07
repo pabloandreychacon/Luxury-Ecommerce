@@ -10,10 +10,13 @@ export interface BusinessSettings {
   longitude: number;
   onlinePassword: string;
   paypalClientId?: string;
+  exchangeRate?: number;
+  currencyCode?: string;
+  languageFormat?: string;
 }
 
 export const defaultSettings: BusinessSettings = {
-  id: 5, // this Id is equal to the Supabase row Id for default Settings table entry
+  id: 8, // this Id is equal to the Supabase row Id for default Settings table entry
   email: 'info@default.com',
   phone: '(555) 123-4567',
   address: '123 Calle Example, Ciudad, Estado 12345',
@@ -22,13 +25,16 @@ export const defaultSettings: BusinessSettings = {
   longitude: -84.099413,
   onlinePassword: '',
   paypalClientId: '',
+  exchangeRate: 1,
+  currencyCode: 'USD',
+  languageFormat: 'en-US',
 };
 
 export async function getSettings(): Promise<BusinessSettings> {
   try {
     const { data, error } = await supabase
       .from('Settings')
-      .select('Email, Phone, Address, BusinessName, MapLocation, OnlinePassword, PaypalClientId')
+      .select('Email, Phone, Address, BusinessName, MapLocation, OnlinePassword, PaypalClientId, ExchangeRate, CurrencyCode, LanguageFormat')
       .eq('Id', defaultSettings.id)
       .single();
 
@@ -60,6 +66,9 @@ export async function getSettings(): Promise<BusinessSettings> {
       longitude,
       onlinePassword: (data.OnlinePassword as string) ?? defaultSettings.onlinePassword,
       paypalClientId: (data.PaypalClientId as string) ?? defaultSettings.paypalClientId,
+      exchangeRate: (data.ExchangeRate as number) ?? defaultSettings.exchangeRate,
+      currencyCode: (data.CurrencyCode as string) ?? defaultSettings.currencyCode,
+      languageFormat: (data.LanguageFormat as string) ?? defaultSettings.languageFormat,
     };
   } catch (err) {
     console.error('getSettings unexpected error', err);

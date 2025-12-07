@@ -1,23 +1,141 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag, Heart, ArrowLeft, Share2, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { Product } from '../lib/types';
-import { MOCK_PRODUCTS } from './Shop';
+import { supabase } from '../lib/supabase';
+import { defaultSettings, getSettings } from '../data/settings';
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [showAdded, setShowAdded] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-  // Find the product
-  const product = MOCK_PRODUCTS.find(p => p.id === id);
+  useEffect(() => {
+    if (id) {
+      loadProduct();
+    }
+  }, [id]);
+
+  const loadProduct = async () => {
+    const { data: productData } = await supabase
+      .from('Products')
+      .select('*')
+      .eq('Id', id)
+      .eq('IdBusiness', defaultSettings.id)
+      .single();
+
+    if (productData) {
+      const { data: categoryData } = await supabase
+        .from('Categories')
+        .select('*')
+        .eq('Id', productData.CategoryId)
+        .single();
+
+      const mappedProduct: Product = {
+        id: String(productData.Id),
+        name: productData.Name,
+        category: categoryData?.Name?.toLowerCase() || '',
+        price: productData.Price,
+        image: productData.ImageUrl,
+        description: productData.Description,
+        material: '',
+        inStock: productData.StockQuantity > 0,
+        rating: 4.5,
+        reviews: 0
+      };
+
+      setProduct(mappedProduct);
+
+      // Load images from storage
+      await loadProductImages(productData.Id);
+
+      // Load related products
+      await loadRelatedProducts(productData.CategoryId, productData.Id);
+    }
+  };
+
+  const loadProductImages = async (productId: number) => {
+    try {
+      const settings = await getSettings();
+      const businessName = settings.businessName.replace(/\s+/g, '');
+      
+      const { data, error } = await supabase.storage
+        .from('postore')
+        .list(`${businessName}/${productId}`);
+
+      if (data && !error) {
+        const imageUrls = data
+          .filter(file => !file.name.startsWith('.'))
+          .map(file => {
+            const { data: publicUrl } = supabase.storage
+              .from('postore')
+              .getPublicUrl(`${businessName}/${productId}/${file.name}`);
+            return publicUrl.publicUrl;
+          });
+        
+        // Get ImageUrl from product
+        const { data: productData } = await supabase
+          .from('Products')
+          .select('ImageUrl')
+          .eq('Id', productId)
+          .single();
+        
+        // Add ImageUrl as first image if it exists
+        const allImages = productData?.ImageUrl 
+          ? [productData.ImageUrl, ...imageUrls]
+          : imageUrls;
+        
+        setImages(allImages.length > 0 ? allImages : []);
+      }
+    } catch (error) {
+      console.error('Error loading images:', error);
+    }
+  };
+
+  const loadRelatedProducts = async (categoryId: number, currentProductId: number) => {
+    const { data } = await supabase
+      .from('Products')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .eq('CategoryId', categoryId)
+      .eq('Active', true)
+      .gt('StockQuantity', 0)
+      .neq('Id', currentProductId)
+      .limit(3);
+
+    if (data) {
+      const { data: categoryData } = await supabase
+        .from('Categories')
+        .select('*')
+        .eq('Id', categoryId)
+        .single();
+
+      const mapped: Product[] = data.map(p => ({
+        id: String(p.Id),
+        name: p.Name,
+        category: categoryData?.Name?.toLowerCase() || '',
+        price: p.Price,
+        image: p.ImageUrl,
+        description: p.Description,
+        material: '',
+        inStock: p.StockQuantity > 0,
+        rating: 4.5,
+        reviews: 0
+      }));
+      setRelatedProducts(mapped);
+    }
+  };
 
   if (!product) {
     return (
@@ -38,16 +156,17 @@ export default function ProductDetail() {
   };
 
   const handleFavorite = () => {
-    setIsFavorited(!isFavorited);
+    if (product) {
+      if (isInWishlist(product.id)) {
+        removeFromWishlist(product.id);
+      } else {
+        addToWishlist(product);
+      }
+    }
   };
 
-  // Generate multiple images for gallery (using same image for now)
-  const images = [product.image, product.image, product.image, product.image];
-
-  // Related products - find similar items
-  const relatedProducts = MOCK_PRODUCTS
-    .filter(p => p.category === product.category && p.id !== product.id)
-    .slice(0, 3);
+  // Use loaded images or fallback to main image
+  const displayImages = images.length > 0 ? images : (product?.image ? [product.image] : []);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -80,27 +199,29 @@ export default function ProductDetail() {
             {/* Main Image */}
             <div className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4 aspect-square">
               <img
-                src={images[activeImageIndex]}
+                src={displayImages[activeImageIndex]}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
 
             {/* Thumbnail Gallery */}
-            <div className="grid grid-cols-4 gap-3">
-              {images.map((img, idx) => (
+            {displayImages.length > 1 && (
+              <div className="grid grid-cols-4 gap-3">
+                {displayImages.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
                   className={`aspect-square rounded-lg overflow-hidden border-2 transition ${activeImageIndex === idx
-                      ? 'border-luxury-gold'
-                      : 'border-gray-300 dark:border-gray-700 hover:border-luxury-gold'
+                    ? 'border-luxury-gold'
+                    : 'border-gray-300 dark:border-gray-700 hover:border-luxury-gold'
                     }`}
                 >
                   <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                 </button>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -117,12 +238,12 @@ export default function ProductDetail() {
                 </div>
                 <button
                   onClick={handleFavorite}
-                  className={`p-2 rounded-full transition ${isFavorited
+                  className={`p-2 rounded-full transition ${product && isInWishlist(product.id)
                       ? 'bg-luxury-gold text-luxury-dark'
                       : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-luxury-gold hover:text-luxury-dark'
                     }`}
                 >
-                  <Heart size={20} fill={isFavorited ? 'currentColor' : 'none'} />
+                  <Heart size={20} fill={product && isInWishlist(product.id) ? 'currentColor' : 'none'} />
                 </button>
               </div>
             </div>
@@ -148,8 +269,8 @@ export default function ProductDetail() {
             {/* Stock Status */}
             <div className="mb-8">
               <div className={`flex items-center gap-2 px-4 py-2 rounded-lg w-fit ${product.inStock
-                  ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                  : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
                 }`}>
                 {product.inStock ? (
                   <>
@@ -202,8 +323,8 @@ export default function ProductDetail() {
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
                 className={`w-full py-4 px-6 rounded-lg flex items-center justify-center gap-3 font-semibold text-lg transition ${product.inStock
-                    ? 'bg-luxury-gold text-luxury-dark hover:bg-opacity-90'
-                    : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                  ? 'bg-luxury-gold text-luxury-dark hover:bg-opacity-90'
+                  : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                   }`}
               >
                 {showAdded ? (

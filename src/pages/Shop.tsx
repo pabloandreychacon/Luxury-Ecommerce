@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../lib/types';
+import { supabase } from '../lib/supabase';
+import { defaultSettings } from '../data/settings';
 
 export const MOCK_PRODUCTS: Product[] = [
   {
@@ -86,11 +88,55 @@ export default function Shop() {
   const [searchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState('featured');
   const [maxPrice, setMaxPrice] = useState(5000);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
 
   const category = searchParams.get('category');
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    // Load categories first
+    const { data: categoriesData } = await supabase
+      .from('Categories')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .eq('Active', true);
+    
+    setCategories(categoriesData || []);
+
+    // Then load products
+    const { data: productsData } = await supabase
+      .from('Products')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .eq('Active', true)
+      .gt('StockQuantity', 0);
+    
+    if (productsData && categoriesData) {
+      const mappedProducts: Product[] = productsData.map(p => {
+        const cat = categoriesData.find(c => c.Id === p.CategoryId);
+        return {
+          id: String(p.Id),
+          name: p.Name,
+          category: cat?.Name?.toLowerCase() || '',
+          price: p.Price,
+          image: p.ImageUrl,
+          description: p.Description,
+          material: '',
+          inStock: p.StockQuantity > 0,
+          rating: 4.5,
+          reviews: 0
+        };
+      });
+      setProducts(mappedProducts);
+    }
+  };
+
   const filteredProducts = useMemo(() => {
-    let filtered = MOCK_PRODUCTS;
+    let filtered = [...products];
 
     // Filter by category if specified
     if (category) {
@@ -110,7 +156,7 @@ export default function Shop() {
     }
 
     return filtered;
-  }, [category, maxPrice, sortBy]);
+  }, [products, category, maxPrice, sortBy]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-8 pb-20">

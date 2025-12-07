@@ -1,15 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { Menu, X, ShoppingBag, Moon, Sun } from 'lucide-react';
+import { Menu, X, ShoppingBag, Heart, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { itemCount } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useTheme();
 
@@ -40,6 +42,9 @@ export default function Header() {
             <Link to="/contact" className="text-gray-700 dark:text-gray-300 hover:text-luxury-gold transition">
               {t('nav.contact')}
             </Link>
+            <Link to="/admin" className="text-gray-700 dark:text-gray-300 hover:text-luxury-gold transition">
+              Admin
+            </Link>
           </nav>
 
           {/* Right Icons */}
@@ -60,6 +65,16 @@ export default function Header() {
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
+
+            {/* Wishlist */}
+            <Link to="/wishlist" className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-luxury-gold transition">
+              <Heart size={20} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-luxury-gold text-luxury-dark text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             {/* Cart */}
             <Link to="/cart" className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-luxury-gold transition">
@@ -112,6 +127,9 @@ export default function Header() {
             </Link>
             <Link to="/contact" className="block text-gray-700 dark:text-gray-300 hover:text-luxury-gold">
               {t('nav.contact')}
+            </Link>
+            <Link to="/admin" className="block text-gray-700 dark:text-gray-300 hover:text-luxury-gold">
+              Admin
             </Link>
           </nav>
         )}

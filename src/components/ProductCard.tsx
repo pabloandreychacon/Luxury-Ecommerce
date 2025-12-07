@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { useState } from 'react';
 
 interface ProductCardProps {
@@ -12,8 +13,10 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { t } = useTranslation();
   const { addItem } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [showAdded, setShowAdded] = useState(false);
+  const inWishlist = isInWishlist(product.id);
 
   const handleAddToCart = () => {
     addItem(product, quantity);
@@ -35,11 +38,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             <p className="text-white text-xl font-semibold">{t('product.outOfStock')}</p>
           </div>
         )}
-        <button 
-          onClick={(e) => e.preventDefault()}
-          className="absolute top-4 right-4 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-luxury-gold transition"
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            if (inWishlist) {
+              removeFromWishlist(product.id);
+            } else {
+              addToWishlist(product);
+            }
+          }}
+          className={`absolute top-4 right-4 p-2 rounded-full shadow-lg transition ${inWishlist
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 hover:bg-luxury-gold text-gray-700 dark:text-gray-300'
+            }`}
         >
-          <Heart size={20} className="text-gray-700 dark:text-gray-300" />
+          <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
         </button>
       </Link>
 
@@ -86,8 +99,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleAddToCart}
             disabled={!product.inStock}
             className={`flex-1 py-2 px-3 rounded flex items-center justify-center gap-2 transition ${product.inStock
-                ? 'bg-luxury-gold text-luxury-dark hover:bg-opacity-90 font-semibold'
-                : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              ? 'bg-luxury-gold text-luxury-dark hover:bg-opacity-90 font-semibold'
+              : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
               }`}
           >
             <ShoppingBag size={16} />

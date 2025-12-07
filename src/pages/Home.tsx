@@ -1,10 +1,34 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { defaultSettings } from '../data/settings';
 import heroImage from '../assets/img/main-luxe-hero.jpg';
+
+interface Category {
+  Id: string;
+  Name: string;
+  DisplayName: string;
+  Active: boolean;
+}
 
 export default function Home() {
   const { t } = useTranslation();
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    const { data } = await supabase
+      .from('Categories')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .eq('Active', true);
+    setCategories(data || []);
+  };
 
   return (
     <div>
@@ -43,163 +67,19 @@ export default function Home() {
           <h2 className="section-title">{t('shop.title')}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Bags */}
-            <Link
-              to="/shop?category=bag"
-              className="group relative h-96 rounded-lg overflow-hidden cursor-pointer"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=600&fit=crop"
-                alt="Luxury Bags"
-                className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end justify-start p-6">
-                <h3 className="text-3xl font-luxury text-white">{t('nav.bags')}</h3>
-              </div>
-            </Link>
-
-            {/* Scarfs */}
-            <Link
-              to="/shop?category=scarf"
-              className="group relative h-96 rounded-lg overflow-hidden cursor-pointer"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=500&h=600&fit=crop"
-                alt="Luxury Scarfs"
-                className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end justify-start p-6">
-                <h3 className="text-3xl font-luxury text-white">{t('nav.scarfs')}</h3>
-              </div>
-            </Link>
-
-            {/* Watches */}
-            <Link
-              to="/shop?category=watch"
-              className="group relative h-96 rounded-lg overflow-hidden cursor-pointer"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&h=600&fit=crop"
-                alt="Luxury Watches"
-                className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end justify-start p-6">
-                <h3 className="text-3xl font-luxury text-white">{t('nav.watches')}</h3>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container-luxury">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="section-title">Featured Products</h2>
-              <p className="text-gray-600 dark:text-gray-400">Handpicked items just for you</p>
-            </div>
-            <Link to="/shop" className="text-luxury-gold hover:text-opacity-80 transition flex items-center gap-1">
-              View All <ArrowRight size={18} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Premium Wireless Headphones */}
-            <Link to="/product/1" className="group card-luxury rounded-lg overflow-hidden">
-              <div className="relative h-56 bg-gray-200 dark:bg-gray-800 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=450&fit=crop"
-                  alt="Premium Wireless Headphones"
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <span className="text-xs font-semibold text-luxury-gold uppercase tracking-wider">Electronics</span>
-                <h3 className="font-luxury text-base mt-2 mb-2 text-gray-900 dark:text-gray-100 line-clamp-2">
-                  Premium Wireless Headphones
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">High-quality wireless headphones with noise cancellation</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-luxury text-luxury-gold">$299.99</span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-2 text-sm transition flex items-center gap-1">
-                    Add
-                  </button>
+            {categories.map((category) => (
+              <Link
+                key={category.Id}
+                to={`/shop?category=${category.Name.toLowerCase()}`}
+                className="group relative h-96 rounded-lg overflow-hidden cursor-pointer bg-luxury-charcoal dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-luxury-gold transition-all duration-300"
+              >
+                <div className="absolute inset-0 flex items-center justify-center p-6">
+                  <h3 className="text-3xl font-luxury text-luxury-gold group-hover:scale-110 transition duration-300">
+                    {category.DisplayName}
+                  </h3>
                 </div>
-              </div>
-            </Link>
-
-            {/* Smart Watch Pro */}
-            <Link to="/product/6" className="group card-luxury rounded-lg overflow-hidden">
-              <div className="relative h-56 bg-gray-200 dark:bg-gray-800 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=450&fit=crop"
-                  alt="Smart Watch Pro"
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <span className="text-xs font-semibold text-luxury-gold uppercase tracking-wider">Watch</span>
-                <h3 className="font-luxury text-base mt-2 mb-2 text-gray-900 dark:text-gray-100 line-clamp-2">
-                  Smart Watch Pro
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Advanced fitness tracking and notifications</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-luxury text-luxury-gold">$399.99</span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-2 text-sm transition flex items-center gap-1">
-                    Add
-                  </button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Mechanical Keyboard */}
-            <Link to="/product/3" className="group card-luxury rounded-lg overflow-hidden">
-              <div className="relative h-56 bg-gray-200 dark:bg-gray-800 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1587829191301-4c2ec8a9d4d2?w=400&h=450&fit=crop"
-                  alt="Mechanical Keyboard"
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <span className="text-xs font-semibold text-luxury-gold uppercase tracking-wider">Electronics</span>
-                <h3 className="font-luxury text-base mt-2 mb-2 text-gray-900 dark:text-gray-100 line-clamp-2">
-                  Mechanical Keyboard
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">RGB backlit mechanical keyboard</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-luxury text-luxury-gold">$129.99</span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-2 text-sm transition flex items-center gap-1">
-                    Add
-                  </button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Wireless Earbuds */}
-            <Link to="/product/2" className="group card-luxury rounded-lg overflow-hidden">
-              <div className="relative h-56 bg-gray-200 dark:bg-gray-800 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1606841837239-c5a1a2a01220?w=400&h=450&fit=crop"
-                  alt="Wireless Earbuds"
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <span className="text-xs font-semibold text-luxury-gold uppercase tracking-wider">Electronics</span>
-                <h3 className="font-luxury text-base mt-2 mb-2 text-gray-900 dark:text-gray-100 line-clamp-2">
-                  Wireless Earbuds
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">True wireless earbuds with charging case</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-luxury text-luxury-gold">$179.99</span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-2 text-sm transition flex items-center gap-1">
-                    Add
-                  </button>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

@@ -25,8 +25,32 @@ export default function Signup() {
     e.preventDefault();
     setLocalError('');
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setLocalError('Please enter a valid email address');
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setLocalError('Password must be at least 6 characters long');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setLocalError('Passwords do not match');
+      return;
+    }
+
+    // Validate name fields
+    if (!formData.firstName.trim()) {
+      setLocalError('First name is required');
+      return;
+    }
+
+    if (!formData.lastName.trim()) {
+      setLocalError('Last name is required');
       return;
     }
 
@@ -48,8 +72,16 @@ export default function Signup() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {(error || localError) && (
-            <div className="bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-200 p-4 rounded text-sm">
-              {error || localError}
+            <div className="bg-red-50 dark:bg-red-900 p-4 rounded">
+              <p className="text-red-700 dark:text-red-200 text-sm mb-2">{error || localError}</p>
+              {(error?.includes('already') || localError?.includes('already')) && (
+                <p className="text-red-600 dark:text-red-300 text-xs">
+                  Already have an account?{' '}
+                  <Link to="/login" className="font-semibold underline hover:text-red-500">
+                    Sign in here
+                  </Link>
+                </p>
+              )}
             </div>
           )}
 
