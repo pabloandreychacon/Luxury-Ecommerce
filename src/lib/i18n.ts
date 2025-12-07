@@ -95,6 +95,9 @@ const resources = {
         businessName: 'Business Name',
         mapLocation: 'Map Location',
         paypalClientId: 'PayPal Client ID',
+        shipping: 'Shipping',
+        addShippingMethod: 'Add Shipping Method',
+        shippingDescription: 'Shipping Description',
       },
       contact: {
         email: 'Email',
@@ -224,6 +227,9 @@ const resources = {
         businessName: 'Nombre del Negocio',
         mapLocation: 'Ubicación del Mapa',
         paypalClientId: 'ID de Cliente PayPal',
+        shipping: 'Envío',
+        addShippingMethod: 'Agregar Método de Envío',
+        shippingDescription: 'Descripción del Envío',
       },
       contact: {
         email: 'Correo',

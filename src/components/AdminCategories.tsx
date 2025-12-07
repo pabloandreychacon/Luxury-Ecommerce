@@ -105,8 +105,8 @@ export default function AdminCategories() {
                   </label>
                   <input
                     type="text"
-                    value={category.Name}
-                    onChange={(e) => handleUpdateCategory(category.Id, 'Name', e.target.value)}
+                    defaultValue={category.Name}
+                    onBlur={(e) => handleUpdateCategory(category.Id, 'Name', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>
@@ -116,8 +116,8 @@ export default function AdminCategories() {
                   </label>
                   <input
                     type="text"
-                    value={category.DisplayName}
-                    onChange={(e) => handleUpdateCategory(category.Id, 'DisplayName', e.target.value)}
+                    defaultValue={category.DisplayName}
+                    onBlur={(e) => handleUpdateCategory(category.Id, 'DisplayName', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>

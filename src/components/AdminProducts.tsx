@@ -83,9 +83,11 @@ export default function AdminProducts() {
   };
 
   useEffect(() => {
-    loadProducts();
-    loadCategories();
-  }, []);
+    if (businessName) {
+      loadProducts();
+      loadCategories();
+    }
+  }, [businessName]);
 
   const loadProducts = async () => {
     const { data } = await supabase
@@ -95,7 +97,7 @@ export default function AdminProducts() {
     setProducts(data || []);
 
     // Load images for each product
-    if (data) {
+    if (data && businessName) {
       const imagesMap: { [productId: string]: string[] } = {};
       for (const product of data) {
         const images = await loadProductImages(product.Id);
@@ -341,8 +343,8 @@ export default function AdminProducts() {
                   </label>
                   <input
                     type="text"
-                    value={product.Name}
-                    onChange={(e) => handleUpdateProduct(product.Id, 'Name', e.target.value)}
+                    defaultValue={product.Name}
+                    onBlur={(e) => handleUpdateProduct(product.Id, 'Name', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>
@@ -463,6 +465,18 @@ export default function AdminProducts() {
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('product.description')}
+                </label>
+                <textarea
+                  defaultValue={product.Description}
+                  onBlur={(e) => handleUpdateProduct(product.Id, 'Description', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                  rows={3}
+                />
               </div>
 
               <div className="flex items-center gap-2">

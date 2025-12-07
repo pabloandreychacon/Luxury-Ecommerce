@@ -12,8 +12,6 @@ export default function AdminSettings() {
   const [businessName, setBusinessName] = useState('');
   const [mapLocation, setMapLocation] = useState('');
   const [paypalClientId, setPaypalClientId] = useState('');
-  const [exchangeRate, setExchangeRate] = useState(1);
-  const [currencyCode, setCurrencyCode] = useState('USD');
 
   useEffect(() => {
     loadSettings();
@@ -50,9 +48,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => handleSave('email', email)}
+          defaultValue={email}
+          onBlur={(e) => handleSave('email', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -62,9 +59,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          onBlur={() => handleSave('phone', phone)}
+          defaultValue={phone}
+          onBlur={(e) => handleSave('phone', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -74,9 +70,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          onBlur={() => handleSave('address', address)}
+          defaultValue={address}
+          onBlur={(e) => handleSave('address', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -86,9 +81,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="text"
-          value={businessName}
-          onChange={(e) => setBusinessName(e.target.value)}
-          onBlur={() => handleSave('BusinessName', businessName)}
+          defaultValue={businessName}
+          onBlur={(e) => handleSave('BusinessName', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -98,9 +92,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="text"
-          value={mapLocation}
-          onChange={(e) => setMapLocation(e.target.value)}
-          onBlur={() => handleSave('MapLocation', mapLocation)}
+          defaultValue={mapLocation}
+          onBlur={(e) => handleSave('MapLocation', e.target.value)}
           placeholder="lat, lng"
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
@@ -111,9 +104,8 @@ export default function AdminSettings() {
         </label>
         <input
           type="text"
-          value={paypalClientId}
-          onChange={(e) => setPaypalClientId(e.target.value)}
-          onBlur={() => handleSave('PaypalClientId', paypalClientId)}
+          defaultValue={paypalClientId}
+          onBlur={(e) => handleSave('PaypalClientId', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
