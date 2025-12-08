@@ -29,7 +29,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       try {
-        setItems(JSON.parse(savedCart));
+        const cartItems = JSON.parse(savedCart);
+        // Fetch taxes for items that don't have it
+        const fetchTaxes = async () => {
+          const updatedItems = await Promise.all(cartItems.map(async (item: CartItem) => {
+            if (item.taxes === undefined) {
+              const { data } = await supabase
+                .from('Products')
+                .select('Taxes')
+                .eq('Id', item.id)
+                .single();
+              return { ...item, taxes: data?.Taxes || 0 };
+            }
+            return item;
+          }));
+          setItems(updatedItems);
+        };
+        fetchTaxes();
       } catch (error) {
         console.error('Error loading cart:', error);
       }
@@ -65,7 +81,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
           rating: 4.5,
           reviews: 0,
           quantity: item.Quantity,
-          taxes: item.Products.Taxes || 0
+          taxes: item.Products.Taxes || 0,
+          dimensions: ''
         }));
         setItems(mappedItems);
       }
@@ -166,6 +183,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = async () => {
     setItems([]);
+    localStorage.removeItem('cart');
 
     // Clear from Supabase if user is logged in
     if (user?.id) {

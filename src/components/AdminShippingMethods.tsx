@@ -126,8 +126,8 @@ export default function AdminShippingMethods() {
                   </label>
                   <input
                     type="number"
-                    value={method.Price}
-                    onChange={(e) => handleUpdateMethod(method.Id, 'Price', parseFloat(e.target.value))}
+                    defaultValue={method.Price}
+                    onBlur={(e) => handleUpdateMethod(method.Id, 'Price', parseFloat(e.target.value) || 0)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>
@@ -137,8 +137,8 @@ export default function AdminShippingMethods() {
                   </label>
                   <input
                     type="number"
-                    value={method.DeliveryDays}
-                    onChange={(e) => handleUpdateMethod(method.Id, 'DeliveryDays', parseInt(e.target.value))}
+                    defaultValue={method.DeliveryDays}
+                    onBlur={(e) => handleUpdateMethod(method.Id, 'DeliveryDays', parseInt(e.target.value) || 0)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>

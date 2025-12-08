@@ -57,7 +57,8 @@ export default function Home() {
             material: '',
             inStock: productData.StockQuantity > 0,
             rating: 4.5,
-            reviews: 0
+            reviews: 0,
+            taxes: productData.Taxes || 0
           });
         }
       }

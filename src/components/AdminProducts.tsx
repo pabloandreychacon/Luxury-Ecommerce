@@ -36,7 +36,8 @@ export default function AdminProducts() {
     categoryId: 0,
     description: '',
     imageUrl: '',
-    stockQuantity: 0
+    stockQuantity: 0,
+    taxes: 0
   });
   const [uploading, setUploading] = useState(false);
   const [businessName, setBusinessName] = useState('');
@@ -198,7 +199,7 @@ export default function AdminProducts() {
       StockQuantity: newProduct.stockQuantity || 0,
       ProductId: 0,
       BusinessEmail: defaultSettings.email,
-      Taxes: 0,
+      Taxes: newProduct.taxes || 0,
       Active: true,
       IsService: false,
       IdBusiness: defaultSettings.id
@@ -209,7 +210,7 @@ export default function AdminProducts() {
       return;
     }
 
-    setNewProduct({ name: '', price: 0, categoryId: 0, description: '', imageUrl: '', stockQuantity: 0 });
+    setNewProduct({ name: '', price: 0, categoryId: 0, description: '', imageUrl: '', stockQuantity: 0, taxes: 0 });
     setErrors({ name: '', price: '', category: '' });
     await loadProducts();
     alert('Product added successfully!');
@@ -298,6 +299,18 @@ export default function AdminProducts() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Taxes (%)
+            </label>
+            <input
+              type="number"
+              placeholder="0"
+              value={newProduct.taxes}
+              onChange={(e) => setNewProduct({ ...newProduct, taxes: parseFloat(e.target.value) || 0 })}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t('admin.productImage')}
             </label>
             <input
@@ -381,6 +394,17 @@ export default function AdminProducts() {
                     type="number"
                     value={product.StockQuantity}
                     onChange={(e) => handleUpdateProduct(product.Id, 'StockQuantity', parseInt(e.target.value))}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Taxes (%)
+                  </label>
+                  <input
+                    type="number"
+                    defaultValue={product.Taxes}
+                    onBlur={(e) => handleUpdateProduct(product.Id, 'Taxes', parseFloat(e.target.value) || 0)}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>

@@ -111,12 +111,16 @@ export default function Checkout() {
           to_email: businessEmail,
           from_email: buyerEmail,
           subject: `New Order #${orderNumber}`,
-          message: `Order Number: ${orderNumber}\n\nCustomer: ${buyerName}\nEmail: ${buyerEmail}\n\nShipping Method: ${selectedShipping?.Description}\nShipping Address: ${shippingAddress}\n\nItems:\n${itemsList}\n\nSubtotal: $${total.toFixed(2)}${taxAmount > 0 ? `\nTax: $${taxAmount.toFixed(2)}` : ''}\nShipping: $${shippingCost.toFixed(2)}\nTotal: $${grandTotal.toFixed(2)}`,
+          message: `Order Number: ${orderNumber}\n\nCustomer: ${buyerName}\nEmail: ${buyerEmail}\n\nShipping Method: ${selectedShipping?.Description}\nShipping Address: ${shippingAddress}\n\nItems:\n${itemsList}\n\nSubtotal: $${total.toFixed(2)}\nService Fee (25%): $${profitAmount.toFixed(2)}${taxAmount > 0 ? `\nTax: $${taxAmount.toFixed(2)}` : ''}\nShipping: $${shippingCost.toFixed(2)}\nTotal: $${grandTotal.toFixed(2)}`,
           name: buyerName
         }
       })
     });
   };
+
+  const PROFIT_MARGIN = 0.25;
+  const profitAmount = total * PROFIT_MARGIN;
+  const subtotalWithProfit = total + profitAmount;
 
   const taxAmount = items.reduce((sum, item) => {
     const itemTax = (item.taxes && item.taxes > 0) ? (item.price * item.quantity * item.taxes / 100) : 0;
@@ -124,7 +128,7 @@ export default function Checkout() {
   }, 0);
 
   const shippingCost = selectedShipping?.Price || 0;
-  const grandTotal = total + taxAmount + shippingCost;
+  const grandTotal = subtotalWithProfit + taxAmount + shippingCost;
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-8 pb-20">
@@ -136,7 +140,7 @@ export default function Checkout() {
           <div className="lg:col-span-2 space-y-8">
             {/* Cart Items */}
             <div className="card-luxury p-6 rounded-lg">
-              <h2 className="font-luxury text-2xl mb-6">Your Items</h2>
+              <h2 className="font-luxury text-2xl mb-6">{t('checkout.yourItems')}</h2>
               <div className="space-y-4">
                 {items.map(item => (
                   <div key={item.id} className="flex gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-0">
@@ -165,7 +169,7 @@ export default function Checkout() {
 
             {/* Shipping Methods */}
             <div className="card-luxury p-6 rounded-lg">
-              <h2 className="font-luxury text-2xl mb-6">Shipping Method</h2>
+              <h2 className="font-luxury text-2xl mb-6">{t('checkout.shippingMethod')}</h2>
               <div className="space-y-3">
                 {shippingMethods.map(method => (
                   <label
@@ -186,7 +190,7 @@ export default function Checkout() {
                       />
                       <div>
                         <span className="font-medium">{method.Description}</span>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{method.DeliveryDays} days</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{method.DeliveryDays} {t('checkout.days')}</p>
                       </div>
                     </div>
                     <span className="font-semibold">${method.Price.toFixed(2)}</span>
@@ -199,19 +203,21 @@ export default function Checkout() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="card-luxury p-6 rounded-lg sticky top-24">
-              <h2 className="font-luxury text-2xl mb-6">Order Summary</h2>
+              <h2 className="font-luxury text-2xl mb-6">{t('checkout.orderSummary')}</h2>
 
               <div className="space-y-3 mb-6 pb-6 border-b border-gray-200 dark:border-gray-800">
                 <div className="flex justify-between text-sm">
                   <span>{t('cart.subtotal')}</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
-                {taxAmount > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span>Tax</span>
-                    <span>${taxAmount.toFixed(2)}</span>
-                  </div>
-                )}
+                <div className="flex justify-between text-sm">
+                  <span>{t('cart.serviceFee')}</span>
+                  <span>${profitAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>{t('cart.tax')}</span>
+                  <span>${taxAmount.toFixed(2)}</span>
+                </div>
                 <div className="flex justify-between text-sm">
                   <span>{t('cart.shipping')}</span>
                   <span>${shippingCost.toFixed(2)}</span>
@@ -268,10 +274,10 @@ export default function Checkout() {
             <div className="text-center">
               <div className="text-6xl mb-4">✓</div>
               <h2 className="text-2xl font-luxury text-gray-900 dark:text-white mb-4">
-                Order Completed!
+                {t('checkout.orderCompleted')}
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Your order #{orderNumber} has been successfully placed.
+                {t('checkout.orderPlaced').replace('{orderNumber}', String(orderNumber))}
               </p>
               <button
                 onClick={() => {
@@ -280,7 +286,7 @@ export default function Checkout() {
                 }}
                 className="btn-primary w-full"
               >
-                Continue Shopping
+                {t('cart.continueShopping')}
               </button>
             </div>
           </div>

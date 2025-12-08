@@ -73,6 +73,15 @@ const resources = {
         checkout: 'Proceed to Checkout',
         remove: 'Remove',
         quantity: 'Quantity',
+        serviceFee: 'Service Fee (25%)',
+      },
+      checkout: {
+        yourItems: 'Your Items',
+        shippingMethod: 'Shipping Method',
+        orderSummary: 'Order Summary',
+        days: 'days',
+        orderCompleted: 'Order Completed!',
+        orderPlaced: 'Your order #{orderNumber} has been successfully placed.',
       },
       wishlist: {
         title: 'Wishlist',
@@ -268,6 +277,15 @@ const resources = {
         checkout: 'Proceder a Pago',
         remove: 'Eliminar',
         quantity: 'Cantidad',
+        serviceFee: 'Tarifa de Servicio (25%)',
+      },
+      checkout: {
+        yourItems: 'Tus Artículos',
+        shippingMethod: 'Método de Envío',
+        orderSummary: 'Resumen del Pedido',
+        days: 'días',
+        orderCompleted: '¡Pedido Completado!',
+        orderPlaced: 'Tu pedido #{orderNumber} ha sido realizado exitosamente.',
       },
       wishlist: {
         title: 'Lista de Deseos',
