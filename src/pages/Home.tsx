@@ -32,31 +32,37 @@ export default function Home() {
       .eq('Active', true);
     setCategories(categoriesData || []);
 
-    const { data: productsData } = await supabase
-      .from('Products')
-      .select('*')
-      .eq('IdBusiness', defaultSettings.id)
-      .eq('Active', true)
-      .gt('StockQuantity', 0)
-      .limit(6);
-    
-    if (productsData && categoriesData) {
-      const mappedProducts: Product[] = productsData.map(p => {
-        const cat = categoriesData.find(c => c.Id === p.CategoryId);
-        return {
-          id: String(p.Id),
-          name: p.Name,
-          category: cat?.Name?.toLowerCase() || '',
-          price: p.Price,
-          image: p.ImageUrl,
-          description: p.Description,
-          material: '',
-          inStock: p.StockQuantity > 0,
-          rating: 4.5,
-          reviews: 0
-        };
-      });
-      setProducts(mappedProducts);
+    if (categoriesData) {
+      const featuredProducts: Product[] = [];
+      
+      for (const category of categoriesData) {
+        const { data: productData } = await supabase
+          .from('Products')
+          .select('*')
+          .eq('IdBusiness', defaultSettings.id)
+          .eq('CategoryId', category.Id)
+          .eq('Active', true)
+          .gt('StockQuantity', 0)
+          .limit(1)
+          .single();
+        
+        if (productData) {
+          featuredProducts.push({
+            id: String(productData.Id),
+            name: productData.Name,
+            category: category.Name?.toLowerCase() || '',
+            price: productData.Price,
+            image: productData.ImageUrl,
+            description: productData.Description,
+            material: '',
+            inStock: productData.StockQuantity > 0,
+            rating: 4.5,
+            reviews: 0
+          });
+        }
+      }
+      
+      setProducts(featuredProducts);
     }
   };
 

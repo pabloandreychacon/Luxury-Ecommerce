@@ -90,8 +90,15 @@ export default function Shop() {
   const [maxPrice, setMaxPrice] = useState(5000);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const category = searchParams.get('category');
+
+  useEffect(() => {
+    if (category) {
+      setSelectedCategory(category);
+    }
+  }, [category]);
 
   useEffect(() => {
     loadData();
@@ -139,8 +146,8 @@ export default function Shop() {
     let filtered = [...products];
 
     // Filter by category if specified
-    if (category) {
-      filtered = filtered.filter(p => p.category === category);
+    if (selectedCategory) {
+      filtered = filtered.filter(p => p.category === selectedCategory);
     }
 
     // Filter by price
@@ -156,7 +163,7 @@ export default function Shop() {
     }
 
     return filtered;
-  }, [products, category, maxPrice, sortBy]);
+  }, [products, selectedCategory, maxPrice, sortBy]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-8 pb-20">
@@ -175,6 +182,36 @@ export default function Shop() {
           <div className="lg:col-span-1">
             <div className="sticky top-24 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
               <h3 className="font-luxury text-lg mb-6">{t('shop.filters')}</h3>
+
+              {/* Category Filter */}
+              <div className="mb-8">
+                <label className="block text-sm font-semibold mb-4">Category</label>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setSelectedCategory('')}
+                    className={`w-full text-left px-3 py-2 rounded text-sm transition ${
+                      selectedCategory === ''
+                        ? 'bg-luxury-gold text-luxury-dark font-semibold'
+                        : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    All Products
+                  </button>
+                  {categories.map(cat => (
+                    <button
+                      key={cat.Id}
+                      onClick={() => setSelectedCategory(cat.Name.toLowerCase())}
+                      className={`w-full text-left px-3 py-2 rounded text-sm transition ${
+                        selectedCategory === cat.Name.toLowerCase()
+                          ? 'bg-luxury-gold text-luxury-dark font-semibold'
+                          : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {cat.DisplayName}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Price Range */}
               <div className="mb-8">
