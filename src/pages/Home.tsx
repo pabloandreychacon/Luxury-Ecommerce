@@ -117,7 +117,7 @@ export default function Home() {
       {/* Products Section */}
       <section className="py-20 bg-white dark:bg-gray-900">
         <div className="container-luxury">
-          <h2 className="section-title">Featured Products</h2>
+          <h2 className="section-title">{t('home.featuredProducts')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map(product => (
               <ProductCard key={product.id} product={product} />
@@ -125,7 +125,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-12">
             <Link to="/shop" className="btn-primary inline-flex items-center gap-2">
-              View All Products <ArrowRight size={20} />
+              {t('home.viewAllProducts')} <ArrowRight size={20} />
             </Link>
           </div>
         </div>
@@ -137,23 +137,23 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl mb-4">✨</div>
-              <h3 className="font-luxury text-xl mb-2">Premium Quality</h3>
+              <h3 className="font-luxury text-xl mb-2">{t('home.premiumQuality')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Handpicked luxury items from the finest designers worldwide.
+                {t('home.premiumQualityDesc')}
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🚚</div>
-              <h3 className="font-luxury text-xl mb-2">Fast Shipping</h3>
+              <h3 className="font-luxury text-xl mb-2">{t('home.fastShipping')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Discreet packaging and worldwide delivery in 2-5 business days.
+                {t('home.fastShippingDesc')}
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🛡️</div>
-              <h3 className="font-luxury text-xl mb-2">Secure Checkout</h3>
+              <h3 className="font-luxury text-xl mb-2">{t('home.secureCheckout')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Protected transactions with encrypted payment processing.
+                {t('home.secureCheckoutDesc')}
               </p>
             </div>
           </div>

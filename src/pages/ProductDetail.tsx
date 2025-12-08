@@ -259,7 +259,7 @@ export default function ProductDetail() {
               <div className="flex items-center gap-3">
                 <div className="text-sm">
                   <span className="font-semibold text-gray-900 dark:text-gray-100">⭐ {product.rating}</span>
-                  <span className="text-gray-600 dark:text-gray-400"> ({product.reviews} reviews)</span>
+                  <span className="text-gray-600 dark:text-gray-400"> ({product.reviews} {t('product.reviews')})</span>
                 </div>
                 <button
                   onClick={handleFavorite}
@@ -285,7 +285,7 @@ export default function ProductDetail() {
 
             {/* Price */}
             <div className="mb-8">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Price</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t('product.price')}</p>
               <p className="text-4xl font-luxury text-luxury-gold">
                 ${product.price.toFixed(2)}
               </p>
@@ -300,10 +300,10 @@ export default function ProductDetail() {
                 {product.inStock ? (
                   <>
                     <Check size={18} />
-                    <span className="font-semibold">In Stock</span>
+                    <span className="font-semibold">{t('product.inStock')}</span>
                   </>
                 ) : (
-                  <span className="font-semibold">Out of Stock</span>
+                  <span className="font-semibold">{t('product.outOfStock')}</span>
                 )}
               </div>
             </div>
@@ -311,12 +311,12 @@ export default function ProductDetail() {
             {/* Product Details */}
             <div className="space-y-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Material</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('product.material')}</p>
                 <p className="font-semibold text-gray-900 dark:text-gray-100">{product.material}</p>
               </div>
               {product.dimensions && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Dimensions</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t('product.dimensions')}</p>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">{product.dimensions}</p>
                 </div>
               )}
@@ -326,7 +326,7 @@ export default function ProductDetail() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                  Quantity
+                  {t('product.quantity')}
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -339,7 +339,7 @@ export default function ProductDetail() {
                     disabled={!product.inStock}
                   />
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    (max 10 per order)
+                    {t('product.maxPerOrder')}
                   </span>
                 </div>
               </div>
@@ -355,19 +355,19 @@ export default function ProductDetail() {
                 {showAdded ? (
                   <>
                     <Check size={24} />
-                    Added to Cart!
+                    {t('product.addedToCart')}
                   </>
                 ) : (
                   <>
                     <ShoppingBag size={24} />
-                    Add to Cart
+                    {t('product.addToCart')}
                   </>
                 )}
               </button>
 
               <button onClick={handleShare} className="w-full py-4 px-6 rounded-lg border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-dark transition font-semibold flex items-center justify-center gap-2">
                 <Share2 size={20} />
-                Share Product
+                {t('product.shareProduct')}
               </button>
             </div>
 
@@ -383,15 +383,15 @@ export default function ProductDetail() {
               <div className="flex items-start gap-4">
                 <div className="text-luxury-gold">✓</div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Easy Returns</p>
-                  <p className="text-gray-600 dark:text-gray-400">30-day return policy</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{t('product.easyReturns')}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('product.easyReturnsDesc')}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-luxury-gold">✓</div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">1:1 Products</p>
-                  <p className="text-gray-600 dark:text-gray-400">100% original materials</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{t('product.originalProducts')}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{t('product.originalProductsDesc')}</p>
                 </div>
               </div>
             </div>
@@ -401,7 +401,7 @@ export default function ProductDetail() {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-20 pt-12 border-t border-gray-200 dark:border-gray-700">
-            <h2 className="section-title mb-12">Related Products</h2>
+            <h2 className="section-title mb-12">{t('product.relatedProducts')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedProducts.map(relProduct => (
                 <Link
