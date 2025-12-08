@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useSearchParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import AddToCartModal from './components/AddToCartModal';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
@@ -18,9 +19,19 @@ import Signup from './pages/Signup';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import Admin from './pages/Admin';
+import Checkout from './pages/Checkout';
 
 function AppContent() {
   const { showModal, lastAddedProduct, closeModal } = useCart();
+  const [searchParams] = useSearchParams();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const lang = searchParams.get('lang');
+    if (lang && (lang === 'en' || lang === 'es')) {
+      i18n.changeLanguage(lang);
+    }
+  }, [searchParams, i18n]);
 
   return (
     <>
@@ -38,6 +49,7 @@ function AppContent() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </main>
         <Footer />

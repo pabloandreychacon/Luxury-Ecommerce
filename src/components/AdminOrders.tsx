@@ -1,0 +1,198 @@
+import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { defaultSettings } from '../data/settings';
+
+interface Order {
+  Id: number;
+  UserId: number;
+  TotalAmount: number;
+  StatusId: number;
+  PaymentOrderId: string;
+  ShippingAddress: string;
+  ShippingMethod: string;
+  TrackingNumber: string;
+  EstimatedDeliveryDate: string;
+  Notes: string;
+  CreatedAt: string;
+  BuyerEmail: string;
+  BusinessEmail: string;
+}
+
+interface OrderItem {
+  Id: number;
+  ProductId: number;
+  ProductName: string;
+  Quantity: number;
+  Price: number;
+  ItemTotal: number;
+}
+
+
+
+export default function AdminOrders() {
+  const { t } = useTranslation();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
+  const [orderItems, setOrderItems] = useState<{ [orderId: number]: OrderItem[] }>({});
+
+  const ORDER_STATUSES = [
+    { id: 0, label: t('admin.orderStatusPending') },
+    { id: 1, label: t('admin.orderStatusPaid') },
+    { id: 2, label: t('admin.orderStatusShipped') },
+    { id: 3, label: t('admin.orderStatusDelivered') },
+    { id: 4, label: t('admin.orderStatusCancelled') }
+  ];
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const loadOrders = async () => {
+    const { data } = await supabase
+      .from('Orders')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .order('CreatedAt', { ascending: false });
+    setOrders(data || []);
+  };
+
+  const handleUpdateOrder = async (id: number, field: string, value: any) => {
+    await supabase.from('Orders').update({ [field]: value }).eq('Id', id);
+  };
+
+  const toggleOrderItems = async (orderId: number) => {
+    const newExpanded = new Set(expandedOrders);
+    if (newExpanded.has(orderId)) {
+      newExpanded.delete(orderId);
+    } else {
+      newExpanded.add(orderId);
+      if (!orderItems[orderId]) {
+        const { data } = await supabase
+          .from('OrderItems')
+          .select('*')
+          .eq('OrderId', orderId);
+        setOrderItems(prev => ({ ...prev, [orderId]: data || [] }));
+      }
+    }
+    setExpandedOrders(newExpanded);
+  };
+
+  return (
+    <div className="space-y-6">
+      {orders.map((order) => (
+        <div key={order.Id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <div className="space-y-4">
+            <div className="flex justify-between items-start border-b border-gray-200 dark:border-gray-700 pb-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Order #{order.Id}
+                  </h3>
+                  <button
+                    onClick={() => toggleOrderItems(order.Id)}
+                    className="text-sm text-luxury-gold hover:text-opacity-80 font-medium"
+                  >
+                    {expandedOrders.has(order.Id) ? 'Hide Items' : 'Show Items'}
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {order.BuyerEmail} • ${order.TotalAmount}
+                </p>
+              </div>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {new Date(order.CreatedAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('admin.orderStatus')}
+                </label>
+                <select
+                  value={order.StatusId}
+                  onChange={(e) => handleUpdateOrder(order.Id, 'StatusId', parseInt(e.target.value))}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                >
+                  {ORDER_STATUSES.map((status) => (
+                    <option key={status.id} value={status.id}>{status.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('admin.trackingNumber')}
+                </label>
+                <input
+                  key={`tracking-${order.Id}`}
+                  type="text"
+                  defaultValue={order.TrackingNumber || ''}
+                  onBlur={(e) => handleUpdateOrder(order.Id, 'TrackingNumber', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('admin.estimatedDelivery')}
+                </label>
+                <input
+                  key={`delivery-${order.Id}`}
+                  type="date"
+                  defaultValue={order.EstimatedDeliveryDate ? new Date(order.EstimatedDeliveryDate).toISOString().split('T')[0] : ''}
+                  onBlur={(e) => handleUpdateOrder(order.Id, 'EstimatedDeliveryDate', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('admin.shippingAddress')}
+                </label>
+                <input
+                  key={`address-${order.Id}`}
+                  type="text"
+                  defaultValue={order.ShippingAddress || ''}
+                  onBlur={(e) => handleUpdateOrder(order.Id, 'ShippingAddress', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t('admin.notes')}
+              </label>
+              <textarea
+                key={`notes-${order.Id}`}
+                defaultValue={order.Notes || ''}
+                onBlur={(e) => handleUpdateOrder(order.Id, 'Notes', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                rows={2}
+              />
+            </div>
+
+            {expandedOrders.has(order.Id) && orderItems[order.Id] && (
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Order Items</h4>
+                <div className="space-y-2">
+                  {orderItems[order.Id].map((item) => (
+                    <div key={item.Id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{item.ProductName}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Qty: {item.Quantity} × ${item.Price}</p>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">${item.ItemTotal}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

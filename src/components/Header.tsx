@@ -1,19 +1,29 @@
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ShoppingBag, Heart, Moon, Sun } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useWishlist } from '../context/WishlistContext';
+import { getSettings } from '../data/settings';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [businessName, setBusinessName] = useState('LUXE');
   const { itemCount } = useCart();
   const { itemCount: wishlistCount } = useWishlist();
   const { user, logout } = useAuth();
   const { isDark, toggleDarkMode } = useTheme();
+
+  useEffect(() => {
+    const loadBusinessName = async () => {
+      const settings = await getSettings();
+      setBusinessName(settings.businessName);
+    };
+    loadBusinessName();
+  }, []);
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en');
@@ -25,7 +35,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="text-2xl font-luxury text-luxury-gold">LUXE</h1>
+            <h1 className="text-2xl font-luxury text-luxury-gold">{businessName}</h1>
           </Link>
 
           {/* Desktop Navigation */}

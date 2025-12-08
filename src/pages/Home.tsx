@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { defaultSettings } from '../data/settings';
 import heroImage from '../assets/img/main-luxe-hero.jpg';
+import ProductCard from '../components/ProductCard';
+import { Product } from '../lib/types';
 
 interface Category {
   Id: string;
@@ -16,18 +18,46 @@ interface Category {
 export default function Home() {
   const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    loadCategories();
+    loadData();
   }, []);
 
-  const loadCategories = async () => {
-    const { data } = await supabase
+  const loadData = async () => {
+    const { data: categoriesData } = await supabase
       .from('Categories')
       .select('*')
       .eq('IdBusiness', defaultSettings.id)
       .eq('Active', true);
-    setCategories(data || []);
+    setCategories(categoriesData || []);
+
+    const { data: productsData } = await supabase
+      .from('Products')
+      .select('*')
+      .eq('IdBusiness', defaultSettings.id)
+      .eq('Active', true)
+      .gt('StockQuantity', 0)
+      .limit(6);
+    
+    if (productsData && categoriesData) {
+      const mappedProducts: Product[] = productsData.map(p => {
+        const cat = categoriesData.find(c => c.Id === p.CategoryId);
+        return {
+          id: String(p.Id),
+          name: p.Name,
+          category: cat?.Name?.toLowerCase() || '',
+          price: p.Price,
+          image: p.ImageUrl,
+          description: p.Description,
+          material: '',
+          inStock: p.StockQuantity > 0,
+          rating: 4.5,
+          reviews: 0
+        };
+      });
+      setProducts(mappedProducts);
+    }
   };
 
   return (
@@ -80,6 +110,23 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <section className="py-20 bg-white dark:bg-gray-900">
+        <div className="container-luxury">
+          <h2 className="section-title">Featured Products</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link to="/shop" className="btn-primary inline-flex items-center gap-2">
+              View All Products <ArrowRight size={20} />
+            </Link>
           </div>
         </div>
       </section>

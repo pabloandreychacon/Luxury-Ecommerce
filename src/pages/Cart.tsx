@@ -89,9 +89,9 @@ export default function Cart() {
                   <span className="font-luxury text-2xl text-luxury-gold">${grandTotal.toFixed(2)}</span>
                 </div>
 
-                <button className="btn-primary w-full mb-4">
+                <Link to="/checkout" className="btn-primary w-full mb-4 block text-center">
                   {t('cart.checkout')}
-                </button>
+                </Link>
 
                 <Link
                   to="/shop"
@@ -105,7 +105,7 @@ export default function Cart() {
                     onClick={clearCart}
                     className="block text-center w-full text-sm text-red-500 hover:text-red-700 transition mt-4"
                   >
-                    Clear Cart
+                    {t('cart.clearCart')}
                   </button>
                 )}
               </div>

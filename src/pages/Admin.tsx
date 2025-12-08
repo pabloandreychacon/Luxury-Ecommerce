@@ -7,13 +7,14 @@ import AdminSettings from '../components/AdminSettings';
 import AdminProducts from '../components/AdminProducts';
 import AdminCategories from '../components/AdminCategories';
 import AdminShippingMethods from '../components/AdminShippingMethods';
+import AdminOrders from '../components/AdminOrders';
 
 export default function Admin() {
   const { t } = useTranslation();
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'settings' | 'products' | 'categories' | 'shipping'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'products' | 'categories' | 'shipping' | 'orders'>('settings');
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState<BusinessSettings | null>(null);
 
@@ -185,12 +186,22 @@ export default function Admin() {
           >
             {t('admin.shipping')}
           </button>
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'orders'
+                ? 'bg-luxury-gold text-luxury-dark'
+                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              }`}
+          >
+            {t('admin.orders')}
+          </button>
         </div>
 
         {activeTab === 'settings' && <AdminSettings />}
         {activeTab === 'products' && <AdminProducts />}
         {activeTab === 'categories' && <AdminCategories />}
         {activeTab === 'shipping' && <AdminShippingMethods />}
+        {activeTab === 'orders' && <AdminOrders />}
 
         {loading && (
           <div className="text-center text-gray-600 dark:text-gray-300">

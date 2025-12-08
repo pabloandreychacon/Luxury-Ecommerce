@@ -8,6 +8,7 @@ interface ShippingMethod {
   Id: string;
   Description: string;
   Price: number;
+  DeliveryDays: number;
   BusinessEmail: string;
   Active: boolean;
   IdBusiness: number;
@@ -16,7 +17,7 @@ interface ShippingMethod {
 export default function AdminShippingMethods() {
   const { t } = useTranslation();
   const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
-  const [newMethod, setNewMethod] = useState({ description: '', price: 0 });
+  const [newMethod, setNewMethod] = useState({ description: '', price: 0, deliveryDays: 0 });
 
   useEffect(() => {
     loadShippingMethods();
@@ -36,12 +37,13 @@ export default function AdminShippingMethods() {
     await supabase.from('ShippingMethods').insert([{
       Description: newMethod.description,
       Price: newMethod.price,
+      DeliveryDays: newMethod.deliveryDays,
       BusinessEmail: defaultSettings.email,
       Active: true,
       IdBusiness: defaultSettings.id
     }]);
 
-    setNewMethod({ description: '', price: 0 });
+    setNewMethod({ description: '', price: 0, deliveryDays: 0 });
     loadShippingMethods();
   };
 
@@ -61,7 +63,7 @@ export default function AdminShippingMethods() {
         <h2 className="text-xl font-luxury text-gray-900 dark:text-white">
           {t('admin.addShippingMethod')}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <input
             type="text"
             placeholder={t('admin.shippingDescription')}
@@ -81,6 +83,18 @@ export default function AdminShippingMethods() {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Delivery Days
+            </label>
+            <input
+              type="number"
+              placeholder="0"
+              value={newMethod.deliveryDays}
+              onChange={(e) => setNewMethod({ ...newMethod, deliveryDays: parseInt(e.target.value) || 0 })}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+            />
+          </div>
         </div>
         <button
           onClick={handleAddMethod}
@@ -94,7 +108,7 @@ export default function AdminShippingMethods() {
         <div key={method.Id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex justify-between items-start">
             <div className="flex-1 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     {t('admin.shippingDescription')}
@@ -114,6 +128,17 @@ export default function AdminShippingMethods() {
                     type="number"
                     value={method.Price}
                     onChange={(e) => handleUpdateMethod(method.Id, 'Price', parseFloat(e.target.value))}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Delivery Days
+                  </label>
+                  <input
+                    type="number"
+                    value={method.DeliveryDays}
+                    onChange={(e) => handleUpdateMethod(method.Id, 'DeliveryDays', parseInt(e.target.value))}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
                   />
                 </div>
