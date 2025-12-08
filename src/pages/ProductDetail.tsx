@@ -69,7 +69,7 @@ export default function ProductDetail() {
     try {
       const settings = await getSettings();
       const businessName = settings.businessName.replace(/\s+/g, '');
-      
+
       const { data, error } = await supabase.storage
         .from('postore')
         .list(`${businessName}/${productId}`);
@@ -83,19 +83,19 @@ export default function ProductDetail() {
               .getPublicUrl(`${businessName}/${productId}/${file.name}`);
             return publicUrl.publicUrl;
           });
-        
+
         // Get ImageUrl from product
         const { data: productData } = await supabase
           .from('Products')
           .select('ImageUrl')
           .eq('Id', productId)
           .single();
-        
+
         // Add ImageUrl as first image if it exists
-        const allImages = productData?.ImageUrl 
+        const allImages = productData?.ImageUrl
           ? [productData.ImageUrl, ...imageUrls]
           : imageUrls;
-        
+
         setImages(allImages.length > 0 ? allImages : []);
       }
     } catch (error) {
@@ -165,6 +165,31 @@ export default function ProductDetail() {
     }
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: product.name,
+      text: `Check out ${product.name} - $${product.price.toFixed(2)}`,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          copyToClipboard();
+        }
+      }
+    } else {
+      copyToClipboard();
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copied to clipboard!');
+  };
+
   // Use loaded images or fallback to main image
   const displayImages = images.length > 0 ? images : (product?.image ? [product.image] : []);
 
@@ -209,16 +234,16 @@ export default function ProductDetail() {
             {displayImages.length > 1 && (
               <div className="grid grid-cols-4 gap-3">
                 {displayImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`aspect-square rounded-lg overflow-hidden border-2 transition ${activeImageIndex === idx
-                    ? 'border-luxury-gold'
-                    : 'border-gray-300 dark:border-gray-700 hover:border-luxury-gold'
-                    }`}
-                >
-                  <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
-                </button>
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`aspect-square rounded-lg overflow-hidden border-2 transition ${activeImageIndex === idx
+                      ? 'border-luxury-gold'
+                      : 'border-gray-300 dark:border-gray-700 hover:border-luxury-gold'
+                      }`}
+                  >
+                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
                 ))}
               </div>
             )}
@@ -239,8 +264,8 @@ export default function ProductDetail() {
                 <button
                   onClick={handleFavorite}
                   className={`p-2 rounded-full transition ${product && isInWishlist(product.id)
-                      ? 'bg-luxury-gold text-luxury-dark'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-luxury-gold hover:text-luxury-dark'
+                    ? 'bg-luxury-gold text-luxury-dark'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-luxury-gold hover:text-luxury-dark'
                     }`}
                 >
                   <Heart size={20} fill={product && isInWishlist(product.id) ? 'currentColor' : 'none'} />
@@ -340,7 +365,7 @@ export default function ProductDetail() {
                 )}
               </button>
 
-              <button className="w-full py-4 px-6 rounded-lg border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-dark transition font-semibold flex items-center justify-center gap-2">
+              <button onClick={handleShare} className="w-full py-4 px-6 rounded-lg border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-dark transition font-semibold flex items-center justify-center gap-2">
                 <Share2 size={20} />
                 Share Product
               </button>
@@ -349,11 +374,11 @@ export default function ProductDetail() {
             {/* Additional Info */}
             <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-4 text-sm">
               <div className="flex items-start gap-4">
-                <div className="text-luxury-gold">✓</div>
+                {/* <div className="text-luxury-gold">✓</div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">Free Shipping</p>
                   <p className="text-gray-600 dark:text-gray-400">On orders over $100</p>
-                </div>
+                </div> */}
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-luxury-gold">✓</div>
@@ -365,8 +390,8 @@ export default function ProductDetail() {
               <div className="flex items-start gap-4">
                 <div className="text-luxury-gold">✓</div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Authentic</p>
-                  <p className="text-gray-600 dark:text-gray-400">100% original products</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">1:1 Products</p>
+                  <p className="text-gray-600 dark:text-gray-400">100% original materials</p>
                 </div>
               </div>
             </div>

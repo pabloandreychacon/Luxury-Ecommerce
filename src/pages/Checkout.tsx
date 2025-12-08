@@ -56,15 +56,7 @@ export default function Checkout() {
     const estimatedDelivery = new Date();
     estimatedDelivery.setDate(estimatedDelivery.getDate() + (selectedShipping?.DeliveryDays || 0));
 
-    let userId = null;
-    if (user?.email) {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', user.email)
-        .single();
-      userId = profileData?.id || null;
-    }
+    const userId = user?.id || null;
 
     const { data: orderData, error: orderError } = await supabase
       .from('Orders')
@@ -119,16 +111,20 @@ export default function Checkout() {
           to_email: businessEmail,
           from_email: buyerEmail,
           subject: `New Order #${orderNumber}`,
-          message: `Order Number: ${orderNumber}\n\nCustomer: ${buyerName}\nEmail: ${buyerEmail}\n\nShipping Method: ${selectedShipping?.Description}\nShipping Address: ${shippingAddress}\n\nItems:\n${itemsList}\n\nSubtotal: $${total.toFixed(2)}\nShipping: $${shippingCost.toFixed(2)}\nTax: $${tax.toFixed(2)}\nTotal: $${grandTotal.toFixed(2)}`,
+          message: `Order Number: ${orderNumber}\n\nCustomer: ${buyerName}\nEmail: ${buyerEmail}\n\nShipping Method: ${selectedShipping?.Description}\nShipping Address: ${shippingAddress}\n\nItems:\n${itemsList}\n\nSubtotal: $${total.toFixed(2)}${taxAmount > 0 ? `\nTax: $${taxAmount.toFixed(2)}` : ''}\nShipping: $${shippingCost.toFixed(2)}\nTotal: $${grandTotal.toFixed(2)}`,
           name: buyerName
         }
       })
     });
   };
 
+  const taxAmount = items.reduce((sum, item) => {
+    const itemTax = (item.taxes && item.taxes > 0) ? (item.price * item.quantity * item.taxes / 100) : 0;
+    return sum + itemTax;
+  }, 0);
+
   const shippingCost = selectedShipping?.Price || 0;
-  const tax = total * 0.1;
-  const grandTotal = total + shippingCost + tax;
+  const grandTotal = total + taxAmount + shippingCost;
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-8 pb-20">
@@ -210,13 +206,15 @@ export default function Checkout() {
                   <span>{t('cart.subtotal')}</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
+                {taxAmount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>Tax</span>
+                    <span>${taxAmount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span>{t('cart.shipping')}</span>
                   <span>${shippingCost.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>{t('cart.tax')}</span>
-                  <span>${tax.toFixed(2)}</span>
                 </div>
               </div>
 

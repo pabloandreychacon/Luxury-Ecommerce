@@ -64,7 +64,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
           inStock: item.Products.StockQuantity > 0,
           rating: 4.5,
           reviews: 0,
-          quantity: item.Quantity
+          quantity: item.Quantity,
+          taxes: item.Products.Taxes || 0
         }));
         setItems(mappedItems);
       }

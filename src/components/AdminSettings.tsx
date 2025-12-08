@@ -49,7 +49,7 @@ export default function AdminSettings() {
         <input
           type="email"
           defaultValue={email}
-          onBlur={(e) => handleSave('email', e.target.value)}
+          onBlur={(e) => handleSave('Email', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -60,7 +60,7 @@ export default function AdminSettings() {
         <input
           type="tel"
           defaultValue={phone}
-          onBlur={(e) => handleSave('phone', e.target.value)}
+          onBlur={(e) => handleSave('Phone', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>
@@ -71,7 +71,7 @@ export default function AdminSettings() {
         <input
           type="text"
           defaultValue={address}
-          onBlur={(e) => handleSave('address', e.target.value)}
+          onBlur={(e) => handleSave('Address', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
         />
       </div>

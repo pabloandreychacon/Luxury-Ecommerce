@@ -40,8 +40,8 @@ export default function Footer() {
             <h4 className="font-luxury text-lg mb-4 text-gray-100">{t('footer.company')}</h4>
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link to="/about" className="hover:text-luxury-gold transition">{t('footer.about')}</Link></li>
-              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.careers')}</Link></li>
-              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.press')}</Link></li>
+              {/* <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.careers')}</Link></li>
+              <li><Link to="#" className="hover:text-luxury-gold transition">{t('footer.press')}</Link></li> */}
             </ul>
           </div>
 
@@ -81,12 +81,12 @@ export default function Footer() {
             <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
               <Facebook size={20} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
+            {/* <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
               <Instagram size={20} />
             </a>
             <a href="#" className="text-gray-400 hover:text-luxury-gold transition">
               <Twitter size={20} />
-            </a>
+            </a> */}
           </div>
         </div>
 
