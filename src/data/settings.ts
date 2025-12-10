@@ -20,7 +20,7 @@ export const defaultSettings: BusinessSettings = {
   email: 'info@default.com',
   phone: '(555) 123-4567',
   address: '123 Calle Example, Ciudad, Estado 12345',
-  businessName: 'Luxe',
+  businessName: 'Costa Rica Luxury',
   latitude: 10.007725,
   longitude: -84.099413,
   onlinePassword: '',
@@ -36,7 +36,7 @@ export async function getSettings(): Promise<BusinessSettings> {
       .from('Settings')
       .select('Email, Phone, Address, BusinessName, MapLocation, OnlinePassword, PaypalClientId, ExchangeRate, CurrencyCode, LanguageFormat')
       .eq('Id', defaultSettings.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Supabase getSettings error:', error);

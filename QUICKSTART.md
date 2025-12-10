@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide - LUXE
+# 🚀 Quick Start Guide - Costa Rica Luxury Ecommerce Platform
 
 ## ⚡ Get Running in 60 Seconds
 

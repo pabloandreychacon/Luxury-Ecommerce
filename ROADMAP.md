@@ -2,7 +2,7 @@
 
 ## Current Status ✅
 
-Your LUXE luxury ecommerce platform is **fully created** and **ready to run**.
+Your Costa Rica luxury ecommerce platform is **fully created** and **ready to run**.
 
 ### What's Included
 - ✅ Complete React + TypeScript + Tailwind setup

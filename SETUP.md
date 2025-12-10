@@ -1,9 +1,8 @@
-# LUXE - Setup & Configuration Guide
+# Costa Rica Luxury Ecommerce - Setup & Configuration Guide
 
 ## Overview
 
-LUXE is a modern luxury ecommerce platform built with React, TypeScript, Tailwind CSS, and Supabase. This guide will help you get started with the application.
-
+Costa Rica Luxury is a modern luxury ecommerce platform built with React, TypeScript, Tailwind CSS, and Supabase. This guide will help you get started with the application.
 ## Initial Setup
 
 ### 1. Install Dependencies
@@ -192,7 +191,7 @@ The application will be available at `http://localhost:5173`
 - Company mission statement
 - Quality and authenticity section
 - Customer commitment
-- Why choose LUXE section
+- Why choose Costa Rica Luxury section
 - Rich text content with highlights
 
 ## Database Schema

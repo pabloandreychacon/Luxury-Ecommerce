@@ -44,7 +44,7 @@ export default function Home() {
           .eq('Active', true)
           .gt('StockQuantity', 0)
           .limit(1)
-          .single();
+          .maybeSingle();
         
         if (productData) {
           featuredProducts.push({

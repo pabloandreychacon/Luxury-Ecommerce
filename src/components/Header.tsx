@@ -11,7 +11,7 @@ import { getSettings } from '../data/settings';
 export default function Header() {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [businessName, setBusinessName] = useState('LUXE');
+  const [businessName, setBusinessName] = useState('Costa Rica Luxury');
   const { itemCount } = useCart();
   const { itemCount: wishlistCount } = useWishlist();
   const { user, logout } = useAuth();
@@ -99,6 +99,9 @@ export default function Header() {
             {/* Account */}
             {user ? (
               <div className="hidden sm:flex items-center space-x-2">
+                <Link to="/orders" className="text-sm text-gray-700 dark:text-gray-300 hover:text-luxury-gold transition">
+                  Orders
+                </Link>
                 <span className="text-sm text-gray-700 dark:text-gray-300">{user.firstName}</span>
                 <button
                   onClick={() => logout()}
@@ -141,6 +144,11 @@ export default function Header() {
             <Link to="/admin" className="block text-gray-700 dark:text-gray-300 hover:text-luxury-gold">
               Admin
             </Link>
+            {user && (
+              <Link to="/orders" className="block text-gray-700 dark:text-gray-300 hover:text-luxury-gold">
+                Orders
+              </Link>
+            )}
           </nav>
         )}
       </div>

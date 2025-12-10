@@ -38,7 +38,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 .from('Products')
                 .select('Taxes')
                 .eq('Id', item.id)
-                .single();
+                .maybeSingle();
               return { ...item, taxes: data?.Taxes || 0 };
             }
             return item;

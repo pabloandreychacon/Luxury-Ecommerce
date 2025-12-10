@@ -33,14 +33,14 @@ export default function ProductDetail() {
       .select('*')
       .eq('Id', id)
       .eq('IdBusiness', defaultSettings.id)
-      .single();
+      .maybeSingle();
 
     if (productData) {
       const { data: categoryData } = await supabase
         .from('Categories')
         .select('*')
         .eq('Id', productData.CategoryId)
-        .single();
+        .maybeSingle();
 
       const mappedProduct: Product = {
         id: String(productData.Id),
@@ -89,7 +89,7 @@ export default function ProductDetail() {
           .from('Products')
           .select('ImageUrl')
           .eq('Id', productId)
-          .single();
+          .maybeSingle();
 
         // Add ImageUrl as first image if it exists
         const allImages = productData?.ImageUrl
@@ -119,7 +119,7 @@ export default function ProductDetail() {
         .from('Categories')
         .select('*')
         .eq('Id', categoryId)
-        .single();
+        .maybeSingle();
 
       const mapped: Product[] = data.map(p => ({
         id: String(p.Id),

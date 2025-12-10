@@ -20,6 +20,7 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
 
 function AppContent() {
   const { showModal, lastAddedProduct, closeModal } = useCart();
@@ -50,6 +51,7 @@ function AppContent() {
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
         </main>
         <Footer />

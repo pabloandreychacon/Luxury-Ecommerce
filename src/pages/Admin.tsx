@@ -56,9 +56,9 @@ export default function Admin() {
           user_id: 'L7o6hZUmFJQ_Jbqu0',
           template_params: {
             to_email: settings.email,
-            subject: 'Password Reset - LUXE Admin',
+            subject: 'Password Reset - Costa Rica Luxury Admin',
             message: `Your temporary password is: ${tempPassword}`,
-            name: 'LUXE Admin'
+            name: 'Costa Rica Luxury Admin'
           }
         })
       });
@@ -153,8 +153,8 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('settings')}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'settings'
-                ? 'bg-luxury-gold text-luxury-dark'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
               }`}
           >
             {t('admin.settings')}
@@ -162,8 +162,8 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('categories')}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'categories'
-                ? 'bg-luxury-gold text-luxury-dark'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
               }`}
           >
             {t('admin.categories')}
@@ -171,8 +171,8 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('products')}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'products'
-                ? 'bg-luxury-gold text-luxury-dark'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
               }`}
           >
             {t('admin.products')}
@@ -180,8 +180,8 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('shipping')}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'shipping'
-                ? 'bg-luxury-gold text-luxury-dark'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
               }`}
           >
             {t('admin.shipping')}
@@ -189,8 +189,8 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('orders')}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'orders'
-                ? 'bg-luxury-gold text-luxury-dark'
-                : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'bg-luxury-gold text-luxury-dark'
+              : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
               }`}
           >
             {t('admin.orders')}

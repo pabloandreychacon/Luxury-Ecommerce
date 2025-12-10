@@ -1,4 +1,4 @@
-# LUXE - Modern Luxury Ecommerce Platform
+# Costa Rica Luxury - Modern Luxury Ecommerce Platform
 
 A premium ecommerce application for luxury fashion items (bags, scarfs, and watches) built with modern web technologies.
 
@@ -252,4 +252,4 @@ MIT License
 
 ## Support
 
-For support, contact us at info@luxe.com
+For support, contact us at info@costaricaluxury.com

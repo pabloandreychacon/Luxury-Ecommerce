@@ -33,8 +33,11 @@ interface OrderItem {
 export default function AdminOrders() {
   const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [orderItems, setOrderItems] = useState<{ [orderId: number]: OrderItem[] }>({});
+  const [emailFilter, setEmailFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   const ORDER_STATUSES = [
     { id: 0, label: t('admin.orderStatusPending') },
@@ -48,6 +51,26 @@ export default function AdminOrders() {
     loadOrders();
   }, []);
 
+  useEffect(() => {
+    let filtered = orders;
+    
+    if (emailFilter) {
+      filtered = filtered.filter(order => 
+        order.BuyerEmail.toLowerCase().includes(emailFilter.toLowerCase())
+      );
+    }
+    
+    if (dateFilter) {
+      filtered = filtered.filter(order => {
+        const orderDate = new Date(order.CreatedAt);
+        const orderYearMonth = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}`;
+        return orderYearMonth === dateFilter;
+      });
+    }
+    
+    setFilteredOrders(filtered);
+  }, [orders, emailFilter, dateFilter]);
+
   const loadOrders = async () => {
     const { data } = await supabase
       .from('Orders')
@@ -55,6 +78,7 @@ export default function AdminOrders() {
       .eq('IdBusiness', defaultSettings.id)
       .order('CreatedAt', { ascending: false });
     setOrders(data || []);
+    setFilteredOrders(data || []);
   };
 
   const handleUpdateOrder = async (id: number, field: string, value: any) => {
@@ -80,7 +104,40 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-6">
-      {orders.map((order) => (
+      {/* Filters */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Filters</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Filter by Email
+            </label>
+            <input
+              type="text"
+              placeholder="Enter email..."
+              value={emailFilter}
+              onChange={(e) => setEmailFilter(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Filter by Date
+            </label>
+            <input
+              type="month"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-luxury-gold"
+            />
+          </div>
+        </div>
+        <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          Showing {filteredOrders.length} of {orders.length} orders
+        </div>
+      </div>
+
+      {filteredOrders.map((order) => (
         <div key={order.Id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="space-y-4">
             <div className="flex justify-between items-start border-b border-gray-200 dark:border-gray-700 pb-4">

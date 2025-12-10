@@ -7,8 +7,8 @@ import { getSettings } from '../data/settings';
 export default function Footer() {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
-  const [businessName, setBusinessName] = useState('LUXE');
-  const [email, setEmail] = useState('info@luxe.com');
+  const [businessName, setBusinessName] = useState('BusinessName');
+  const [email, setEmail] = useState('info@businessname.com');
   const [phone, setPhone] = useState('+1 (234) 567-890');
   const [address, setAddress] = useState('123 Fashion Ave, NY');
 

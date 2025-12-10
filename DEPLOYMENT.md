@@ -1,8 +1,8 @@
-# 🚀 Deployment Guide - LUXE Ecommerce
+# 🚀 Deployment Guide - Costa Rica Luxury Ecommerce
 
 ## Overview
 
-This guide covers deploying your LUXE luxury ecommerce platform to production.
+This guide covers deploying your Costa Rica luxury ecommerce platform to production.
 
 ## Pre-Deployment Checklist
 

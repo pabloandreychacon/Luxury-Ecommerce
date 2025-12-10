@@ -1,4 +1,4 @@
-# 🌟 LUXE - Modern Luxury Ecommerce Platform
+# 🌟 Costa Rica Luxury - Modern Luxury Ecommerce Platform
 
 ## ✅ Project Successfully Created!
 
